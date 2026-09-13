@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Dashboard } from "./Dashboard";
+import { topics } from "@/data/topics";
 
 describe("Dashboard", () => {
   it("lists every topic with a Start link when there is no progress yet", () => {
@@ -15,7 +16,8 @@ describe("Dashboard", () => {
     expect(screen.getByText("git pull")).toBeInTheDocument();
     // nativeButton={false} makes Base UI apply role="button" to the rendered
     // <a> (it's not a native <button>), so these are queried as buttons.
-    expect(screen.getAllByRole("button", { name: "Start" })).toHaveLength(9);
+    const beginnerTopicCount = topics.filter((t) => t.tier === "beginner").length;
+    expect(screen.getAllByRole("button", { name: "Start" })).toHaveLength(beginnerTopicCount);
   });
 
   it("shows Review for a completed topic", () => {

@@ -1,6 +1,8 @@
-# Git Gud
+# SDE Fundamentals
 
-A gamified Git tutorial & quiz app, built with React + TypeScript + Vite.
+A gamified software development fundamentals tutorial & quiz app, built with React + TypeScript + Vite.
+
+Covers six modules: Version Control (Git), Testing & Debugging, CI/CD, Code Review, Design Patterns, and Databases — each with bite-sized explanations, illustrative diagrams, and quizzes.
 
 This project was scaffolded from Vite's React-TS template (minimal setup for React with HMR and some Oxlint rules).
 

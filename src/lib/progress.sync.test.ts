@@ -36,10 +36,11 @@ vi.mock("./cloudProgress", () => ({
 
 vi.mock("@/data/topics", () => ({
   topics: [
-    { id: "commit", tier: "beginner", title: "", summary: "", explanation: "", diagrams: [], quiz: [] },
-    { id: "branch", tier: "beginner", title: "", summary: "", explanation: "", diagrams: [], quiz: [] },
+    { id: "commit", module: "version-control", tier: "beginner", title: "", summary: "", explanation: "", diagrams: [], quiz: [] },
+    { id: "branch", module: "version-control", tier: "beginner", title: "", summary: "", explanation: "", diagrams: [], quiz: [] },
     {
       id: "rebase",
+      module: "version-control",
       tier: "intermediate",
       unlockCost: 30,
       title: "",

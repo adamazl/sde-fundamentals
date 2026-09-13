@@ -9,6 +9,7 @@ vi.mock("@/data/topics", () => ({
   topics: [
     {
       id: "rebase",
+      module: "version-control",
       title: "git rebase",
       summary: "",
       explanation: "Replay commits onto a new base.",

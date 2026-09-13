@@ -2,7 +2,7 @@ interface LogoProps {
   className?: string;
 }
 
-/** The GitGud mark — same artwork as public/favicon.svg, reused inline so it can sit at any size in the UI. */
+/** The app mark — same artwork as public/favicon.svg, reused inline so it can sit at any size in the UI. */
 export function Logo({ className }: LogoProps) {
   return (
     <img

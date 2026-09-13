@@ -56,9 +56,32 @@ describe("ContinueCard", () => {
 
   it("shows a mastery message once every unlocked topic is completed, without recommending a locked one", () => {
     const progress: ProgressMap = Object.fromEntries(
-      ["init", "add", "commit", "branch", "checkout", "merge", "clone", "push", "pull"].map(
-        (id) => [id, { completed: true, bestScore: 2, totalQuestions: 2 }]
-      )
+      [
+        "init",
+        "add",
+        "commit",
+        "branch",
+        "checkout",
+        "merge",
+        "clone",
+        "push",
+        "pull",
+        "unit-testing",
+        "test-pyramid",
+        "debugging",
+        "continuous-integration",
+        "continuous-deployment",
+        "pipelines",
+        "why-code-review",
+        "pr-workflow",
+        "giving-feedback",
+        "what-is-a-pattern",
+        "singleton",
+        "factory",
+        "what-is-a-database",
+        "sql-vs-nosql",
+        "keys-and-relationships",
+      ].map((id) => [id, { completed: true, bestScore: 2, totalQuestions: 2 }])
     );
 
     render(
@@ -73,9 +96,32 @@ describe("ContinueCard", () => {
 
   it("recommends an unlocked intermediate/advanced topic once it's been unlocked", () => {
     const progress: ProgressMap = Object.fromEntries(
-      ["init", "add", "commit", "branch", "checkout", "merge", "clone", "push", "pull"].map(
-        (id) => [id, { completed: true, bestScore: 2, totalQuestions: 2 }]
-      )
+      [
+        "init",
+        "add",
+        "commit",
+        "branch",
+        "checkout",
+        "merge",
+        "clone",
+        "push",
+        "pull",
+        "unit-testing",
+        "test-pyramid",
+        "debugging",
+        "continuous-integration",
+        "continuous-deployment",
+        "pipelines",
+        "why-code-review",
+        "pr-workflow",
+        "giving-feedback",
+        "what-is-a-pattern",
+        "singleton",
+        "factory",
+        "what-is-a-database",
+        "sql-vs-nosql",
+        "keys-and-relationships",
+      ].map((id) => [id, { completed: true, bestScore: 2, totalQuestions: 2 }])
     );
 
     render(

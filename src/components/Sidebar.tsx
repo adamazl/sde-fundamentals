@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { topics } from "@/data/topics";
+import { modules, topics } from "@/data/topics";
 import type { ProgressMap } from "@/lib/progress";
 
 interface SidebarProps {
@@ -36,33 +36,44 @@ export function Sidebar({ progress, topicsMastered, open, onClose }: SidebarProp
             {topicsMastered} / {topics.length} topics mastered
           </p>
         </div>
-        <ul className="space-y-1">
-          {topics.map((topic) => {
-            const p = progress[topic.id];
-            return (
-              <li key={topic.id}>
-                <NavLink
-                  to={`/topic/${topic.id}`}
-                  onClick={onClose}
-                  className={({ isActive }) =>
-                    `flex items-center justify-between rounded px-2 py-1.5 text-sm hover:bg-muted ${
-                      isActive ? "bg-muted font-medium" : ""
-                    }`
-                  }
-                >
-                  <span>{topic.title}</span>
-                  {p?.completed ? (
-                    <Badge>✓</Badge>
-                  ) : p ? (
-                    <Badge variant="secondary">
-                      {p.bestScore}/{p.totalQuestions}
-                    </Badge>
-                  ) : null}
-                </NavLink>
-              </li>
-            );
-          })}
-        </ul>
+        {modules.map((module) => {
+          const moduleTopics = topics.filter((topic) => topic.module === module.id);
+          if (moduleTopics.length === 0) return null;
+          return (
+            <div key={module.id}>
+              <p className="text-muted-foreground px-2 text-xs font-semibold uppercase tracking-wide">
+                {module.title}
+              </p>
+              <ul className="space-y-1">
+                {moduleTopics.map((topic) => {
+                  const p = progress[topic.id];
+                  return (
+                    <li key={topic.id}>
+                      <NavLink
+                        to={`/topic/${topic.id}`}
+                        onClick={onClose}
+                        className={({ isActive }) =>
+                          `flex items-center justify-between rounded px-2 py-1.5 text-sm hover:bg-muted ${
+                            isActive ? "bg-muted font-medium" : ""
+                          }`
+                        }
+                      >
+                        <span>{topic.title}</span>
+                        {p?.completed ? (
+                          <Badge>✓</Badge>
+                        ) : p ? (
+                          <Badge variant="secondary">
+                            {p.bestScore}/{p.totalQuestions}
+                          </Badge>
+                        ) : null}
+                      </NavLink>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          );
+        })}
       </nav>
     </>
   );

@@ -6,7 +6,7 @@ import { ContinueCard } from "@/components/ContinueCard";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { topics } from "@/data/topics";
+import { modules, topics } from "@/data/topics";
 import type { ProgressMap } from "@/lib/progress";
 import { isTopicUnlocked } from "@/lib/credits";
 
@@ -31,66 +31,77 @@ export function Dashboard({
     <div className="p-4 sm:p-6">
       <div className="bg-muted/50 mb-6 flex flex-col items-center gap-3 rounded-lg p-6 text-center sm:p-8">
         <Logo className="h-12 w-12" />
-        <p className="text-2xl font-bold sm:text-3xl">Git Gud</p>
+        <p className="text-2xl font-bold sm:text-3xl">SDE Fundamentals</p>
         <p className="text-muted-foreground max-w-2xl">
-          A gamified way to learn Git. Work through bite-sized quizzes on core Git commands, earn
-          XP as you go, and track your progress across topics.
+          A gamified tour of software development fundamentals. Work through bite-sized quizzes
+          across version control, testing, CI/CD, code review, design patterns, and databases —
+          earning XP and tracking your progress as you go.
         </p>
       </div>
       <h2 className="text-xl font-semibold mb-4">Choose a topic</h2>
       <ContinueCard progress={progress} unlockedTopics={unlockedTopics} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {topics.map((topic) => {
-          if (!isTopicUnlocked(topic, unlockedTopics)) {
-            const cost = topic.unlockCost ?? 0;
-            const affordable = credits >= cost;
-            return (
-              <Card key={topic.id} className="opacity-75">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <LockIcon className="h-4 w-4" />
-                    {topic.title}
-                  </CardTitle>
-                  <CardDescription>
-                    {topic.summary} Requires {cost} credits.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {signedIn ? (
-                    <Button disabled={!affordable} onClick={() => onUnlock(topic.id)}>
-                      Unlock for {cost} credits
-                    </Button>
-                  ) : (
-                    <Button variant="outline" onClick={() => setAccountDialogOpen(true)}>
-                      Sign in to unlock
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            );
-          }
+      {modules.map((module) => {
+        const moduleTopics = topics.filter((topic) => topic.module === module.id);
+        if (moduleTopics.length === 0) return null;
+        return (
+          <section key={module.id} className="mb-8">
+            <h3 className="text-lg font-semibold">{module.title}</h3>
+            <p className="text-muted-foreground mb-4 text-sm">{module.description}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {moduleTopics.map((topic) => {
+                if (!isTopicUnlocked(topic, unlockedTopics)) {
+                  const cost = topic.unlockCost ?? 0;
+                  const affordable = credits >= cost;
+                  return (
+                    <Card key={topic.id} className="opacity-75">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <LockIcon className="h-4 w-4" />
+                          {topic.title}
+                        </CardTitle>
+                        <CardDescription>
+                          {topic.summary} Requires {cost} credits.
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        {signedIn ? (
+                          <Button disabled={!affordable} onClick={() => onUnlock(topic.id)}>
+                            Unlock for {cost} credits
+                          </Button>
+                        ) : (
+                          <Button variant="outline" onClick={() => setAccountDialogOpen(true)}>
+                            Sign in to unlock
+                          </Button>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                }
 
-          const p = progress[topic.id];
-          const label = p?.completed ? "Review" : p ? "Continue" : "Start";
-          return (
-            <Card key={topic.id}>
-              <CardHeader>
-                <CardTitle>{topic.title}</CardTitle>
-                <CardDescription>{topic.summary}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  render={<Link to={`/topic/${topic.id}`} />}
-                  nativeButton={false}
-                  variant={p?.completed ? "secondary" : "default"}
-                >
-                  {label}
-                </Button>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+                const p = progress[topic.id];
+                const label = p?.completed ? "Review" : p ? "Continue" : "Start";
+                return (
+                  <Card key={topic.id}>
+                    <CardHeader>
+                      <CardTitle>{topic.title}</CardTitle>
+                      <CardDescription>{topic.summary}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button
+                        render={<Link to={`/topic/${topic.id}`} />}
+                        nativeButton={false}
+                        variant={p?.completed ? "secondary" : "default"}
+                      >
+                        {label}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })}
       <AccountDialog
         open={accountDialogOpen}
         onOpenChange={setAccountDialogOpen}

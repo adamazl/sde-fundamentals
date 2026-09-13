@@ -10,6 +10,7 @@ import {
 
 const rebase: Topic = {
   id: "rebase",
+  module: "version-control",
   title: "git rebase",
   summary: "",
   explanation: "",
@@ -21,6 +22,7 @@ const rebase: Topic = {
 
 const init: Topic = {
   id: "init",
+  module: "version-control",
   title: "git init",
   summary: "",
   explanation: "",

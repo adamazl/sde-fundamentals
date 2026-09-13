@@ -4,29 +4,35 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { Dashboard } from "./Dashboard";
 
-vi.mock("@/data/topics", () => ({
-  topics: [
-    {
-      id: "init",
-      title: "git init",
-      summary: "Turn a folder into a Git repository.",
-      explanation: "",
-      diagrams: [],
-      quiz: [],
-      tier: "beginner",
-    },
-    {
-      id: "rebase",
-      title: "git rebase",
-      summary: "Replay commits onto a new base.",
-      explanation: "",
-      diagrams: [],
-      quiz: [],
-      tier: "intermediate",
-      unlockCost: 30,
-    },
-  ],
-}));
+vi.mock("@/data/topics", async () => {
+  const actual = await vi.importActual<typeof import("@/data/topics")>("@/data/topics");
+  return {
+    modules: actual.modules,
+    topics: [
+      {
+        id: "init",
+        module: "version-control",
+        title: "git init",
+        summary: "Turn a folder into a Git repository.",
+        explanation: "",
+        diagrams: [],
+        quiz: [],
+        tier: "beginner",
+      },
+      {
+        id: "rebase",
+        module: "version-control",
+        title: "git rebase",
+        summary: "Replay commits onto a new base.",
+        explanation: "",
+        diagrams: [],
+        quiz: [],
+        tier: "intermediate",
+        unlockCost: 30,
+      },
+    ],
+  };
+});
 
 describe("Dashboard locked topics (signed out)", () => {
   it("hides the Start link and prompts sign-in instead of showing an unlock button", () => {

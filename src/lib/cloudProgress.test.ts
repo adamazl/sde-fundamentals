@@ -17,6 +17,7 @@ vi.mock("@/lib/firebase", () => ({ db: {} }));
 
 const rebase: Topic = {
   id: "rebase",
+  module: "version-control",
   title: "git rebase",
   summary: "",
   explanation: "",
@@ -28,6 +29,7 @@ const rebase: Topic = {
 
 const cherryPick: Topic = {
   id: "cherry-pick",
+  module: "version-control",
   title: "git cherry-pick",
   summary: "",
   explanation: "",

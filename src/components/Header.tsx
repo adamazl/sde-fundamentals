@@ -32,7 +32,7 @@ export function Header({ totalXp, credits, user, onSignOut, onResetProgress, onM
         <h1 className="min-w-0 text-lg font-semibold">
           <Link to="/" className="flex items-center gap-2 min-w-0">
             <Logo className="h-7 w-7 shrink-0" />
-            <span className="truncate">Git Gud</span>
+            <span className="truncate">SDE Fundamentals</span>
           </Link>
         </h1>
       </div>

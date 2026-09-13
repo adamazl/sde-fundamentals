@@ -16,13 +16,17 @@ Tests use `jsdom` + React Testing Library; global test APIs (`describe`/`it`/`ex
 
 ## Architecture
 
-Git Gud is a client-side-only (no custom backend) gamified Git tutorial: static lesson content paired with multiple-choice quizzes, confetti on success, and optional cloud-synced progress. Stack: Vite + React 19 + TypeScript + Tailwind v4 + react-router-dom, shadcn/ui components (`src/components/ui`, style `base-nova`, see `components.json`) with `@/` aliased to `src/`.
+SDE Fundamentals is a client-side-only (no custom backend) gamified software development tutorial: static lesson content paired with multiple-choice quizzes, confetti on success, and optional cloud-synced progress. Stack: Vite + React 19 + TypeScript + Tailwind v4 + react-router-dom, shadcn/ui components (`src/components/ui`, style `base-nova`, see `components.json`) with `@/` aliased to `src/`.
 
 ### Content model
-`src/data/topics.ts` is the single source of truth for all lesson content: a static array of `Topic` objects (id, title, explanation text, one or more `DiagramKind`s, and a `quiz: QuizQuestion[]`). `TopicPage` looks up a topic by the `:id` route param and renders its explanation, diagrams, and `Quiz` in sequence — adding a topic means adding an entry here, nothing else needs to change structurally.
+`src/data/topics.ts` is the single source of truth for all lesson content. It exports:
+- `modules: Module[]` — the fixed list of curriculum modules (Version Control, Testing & Debugging, CI/CD, Code Review, Design Patterns, Databases), rendered in that order on the dashboard and in the sidebar.
+- `topics: Topic[]` — a flat array of `Topic` objects (id, `module` — the `ModuleId` it belongs to, title, explanation text, one or more `DiagramKind`s, and a `quiz: QuizQuestion[]`).
+
+`TopicPage` looks up a topic by the `:id` route param and renders its explanation, diagrams, and `Quiz` in sequence. `Dashboard` and `Sidebar` both group `topics` by `module` (in `modules` order) for display. Adding a topic to an existing module means adding an entry to `topics` with that module's id — nothing else needs to change structurally. Adding a whole new module means adding an entry to `modules` first.
 
 ### Diagrams
-`src/components/gitgraphs/` renders the small illustrative SVGs. `DiagramRenderer` is a switch over `DiagramKind` (`types.ts`) that composes the two generic primitives in `primitives.tsx`: `BoxFlow` (linear box-to-box flow, e.g. working dir → staging → repo) and `CommitGraph` (nodes/edges/refs, e.g. commit history, branches, merges). New diagrams are usually a new `DiagramKind` case built from these primitives rather than a bespoke component.
+`src/components/gitgraphs/` renders the small illustrative SVGs (the directory name predates the broader curriculum but still holds all diagram code). `DiagramRenderer` is a switch over `DiagramKind` (`types.ts`) that composes the two generic primitives in `primitives.tsx`: `BoxFlow` (linear box-to-box flow, e.g. working dir → staging → repo, or CI pipeline stages) and `CommitGraph` (nodes/edges/refs, e.g. commit history, branches, merges, or a subject fanning out to observers). New diagrams are usually a new `DiagramKind` case built from these primitives rather than a bespoke component.
 
 ### Progress and auth
 Three modules work together and should be understood as a unit:
@@ -30,13 +34,13 @@ Three modules work together and should be understood as a unit:
 - `src/lib/cloudProgress.ts` — Firestore reads/writes of a user's progress map (`users/{uid}` doc), plus `mergeProgressMaps` for reconciling local in-session state with what's stored in the cloud on sign-in.
 - `src/lib/progress.ts` — `useProgress(totalTopics, user)` hook holding the actual `ProgressMap` React state, recording quiz results, and computing overall stats (topics mastered, total XP).
 
-Progress is **cloud-only, not `localStorage`** (this was changed post-launch — see git history "Drop localStorage progress"; the design doc under `docs/superpowers/specs/` still describes the original `localStorage` plan and is out of date on this point). Signed-out play updates in-memory state for the current tab only and is lost on reload; signed-in users get their progress loaded from and saved to Firestore on every quiz completion.
+Progress is **cloud-only, not `localStorage`**. Signed-out play updates in-memory state for the current tab only and is lost on reload; signed-in users get their progress loaded from and saved to Firestore on every quiz completion.
 
 ### Firebase configuration is optional
 `src/lib/firebase.ts` only calls `initializeApp`/`getAuth`/`getFirestore` when `VITE_FIREBASE_*` env vars are present (`firebaseConfigured`); otherwise `auth`/`db` stay `null` and every caller in `auth.ts`/`cloudProgress.ts` guards on that. This lets the app run fully anonymously (quizzes and diagrams work, no account features) without any env setup. Required vars are listed in `.env.example`; the GitHub Pages deploy workflow (`.github/workflows/deploy.yml`) injects them from repo secrets at build time.
 
 ### Routing
-Two routes only: `/` → `Dashboard` (topic list/progress overview), `/topic/:id` → `TopicPage`. Both live under `App.tsx`, which owns the `useAuth`/`useProgress` state and passes callbacks down.
+Two routes only: `/` → `Dashboard` (module/topic list and progress overview), `/topic/:id` → `TopicPage`. Both live under `App.tsx`, which owns the `useAuth`/`useProgress` state and passes callbacks down.
 
 ### Deployment
-Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and publishes to GitHub Pages. `vite.config.ts` sets `base: "/gitgud/"` to match the Pages subpath — keep this in sync if the repo/Pages path changes.
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds and publishes to GitHub Pages. `vite.config.ts` sets `base: "/sde-fundamentals/"` to match the Pages subpath — keep this in sync if the repo/Pages path changes.

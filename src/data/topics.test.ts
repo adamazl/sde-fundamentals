@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { topics } from "./topics";
+import { modules, topics } from "./topics";
 
 describe("topics data", () => {
-  it("defines the core topics in learning order, followed by locked topics", () => {
-    expect(topics.map((t) => t.id)).toEqual([
+  it("defines the version-control topics in learning order, followed by locked topics", () => {
+    expect(topics.filter((t) => t.module === "version-control").map((t) => t.id)).toEqual([
       "init",
       "add",
       "commit",
@@ -16,6 +16,19 @@ describe("topics data", () => {
       "stash",
       "rebase",
     ]);
+  });
+
+  it("assigns every topic to a module that exists in the modules list", () => {
+    const moduleIds = new Set(modules.map((m) => m.id));
+    for (const topic of topics) {
+      expect(moduleIds.has(topic.module)).toBe(true);
+    }
+  });
+
+  it("gives every module at least one topic", () => {
+    for (const module of modules) {
+      expect(topics.some((t) => t.module === module.id)).toBe(true);
+    }
   });
 
   it("gives every intermediate/advanced topic a positive unlock cost, and every beginner topic none", () => {
